@@ -11,9 +11,13 @@ import { AdminModule } from './admin/admin.module';
 import { OrdersModule } from './orders/orders.module';
 import { AuthModule } from './auth/auth.module';
 import config from './config';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.register({
+      dest: './uploads',
+    }),
     ConfigModule.forRoot({
       envFilePath: enviroments[process.env.NODE_ENV] || '.env',
       load: [config],
