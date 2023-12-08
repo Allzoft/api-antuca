@@ -6,15 +6,15 @@ import {
   Patch,
   Param,
   Delete,
-  //   UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { OrdersService } from './services/orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
-// import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {

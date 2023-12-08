@@ -6,15 +6,15 @@ import {
   Patch,
   Param,
   Delete,
-  //   UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { StatesService } from './services/states.service';
 import { CreateStatesDto } from './dto/create-state.dto';
 import { UpdateStatesDto } from './dto/update-state.dto';
 import { ApiTags } from '@nestjs/swagger';
-// import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @ApiTags('admin')
 @Controller('states')
 export class StatesController {

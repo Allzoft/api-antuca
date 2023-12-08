@@ -6,15 +6,15 @@ import {
   Patch,
   Param,
   Delete,
-  //   UseGuards,
+  UseGuards,
 } from '@nestjs/common';
 import { ClientsService } from './services/clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { ApiTags } from '@nestjs/swagger';
-// import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @ApiTags('clients')
 @Controller('clients')
 export class ClientsController {

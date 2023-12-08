@@ -9,6 +9,7 @@ import { enviroments } from './enviroments';
 import { CostumersModule } from './costumers/costumers.module';
 import { AdminModule } from './admin/admin.module';
 import { OrdersModule } from './orders/orders.module';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 @Module({
@@ -48,6 +49,8 @@ import config from './config';
     AdminModule,
 
     OrdersModule,
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
