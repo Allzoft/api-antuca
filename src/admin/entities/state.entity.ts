@@ -1,9 +1,12 @@
+import { Orders } from 'src/orders/entities/order.entity';
+
 import {
   PrimaryGeneratedColumn,
   Column,
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -38,4 +41,7 @@ export class States {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
+
+  @OneToMany(() => Orders, (order) => order.state)
+  orders: Orders[];
 }

@@ -1,10 +1,4 @@
-import {
-  IsDecimal,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PrimaryGeneratedColumn } from 'typeorm';
 export class CreateItemDto {
   @PrimaryGeneratedColumn()
@@ -19,7 +13,6 @@ export class CreateItemDto {
   description: string;
 
   @IsNumber()
-  @IsDecimal()
   price: number;
 
   @IsNumber()

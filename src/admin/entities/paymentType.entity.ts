@@ -1,13 +1,15 @@
+import { Orders } from 'src/orders/entities/order.entity';
 import {
   PrimaryGeneratedColumn,
   Column,
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
-export class paymentType {
+export class PaymentType {
   @PrimaryGeneratedColumn()
   id_payment_type: number;
 
@@ -26,4 +28,7 @@ export class paymentType {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
+
+  @OneToMany(() => Orders, (order) => order.paymentType)
+  orders: Orders[];
 }

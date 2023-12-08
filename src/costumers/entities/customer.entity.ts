@@ -1,10 +1,12 @@
 import { Exclude } from 'class-transformer';
+import { Orders } from 'src/orders/entities/order.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -52,4 +54,7 @@ export class Customers {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updated_at: Date;
+
+  @OneToMany(() => Orders, (order) => order.customer)
+  orders: Orders[];
 }
