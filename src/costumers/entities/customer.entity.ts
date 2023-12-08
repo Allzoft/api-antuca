@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,7 +8,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Customer {
+export class Customers {
   @PrimaryGeneratedColumn()
   id_customer: number;
 
@@ -20,6 +21,7 @@ export class Customer {
   @Column({ type: 'varchar', length: 50, nullable: false })
   email: string;
 
+  @Exclude()
   @Column({ type: 'varchar', length: 100, nullable: false })
   password: string;
 
