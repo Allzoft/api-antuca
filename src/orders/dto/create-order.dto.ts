@@ -1,11 +1,15 @@
 import {
+  IsArray,
   IsDate,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 import { PrimaryGeneratedColumn } from 'typeorm';
+import { CreateOrderItemDto } from './create-order-item.dto';
 
 export class CreateOrderDto {
   @PrimaryGeneratedColumn()
@@ -42,4 +46,10 @@ export class CreateOrderDto {
   @IsNumber()
   @IsOptional()
   status: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderItemDto)
+  @IsNotEmpty()
+  items: CreateOrderItemDto[];
 }

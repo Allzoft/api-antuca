@@ -8,6 +8,8 @@ import { Customers } from 'src/costumers/entities/customer.entity';
 import { PaymentType } from 'src/admin/entities/paymentType.entity';
 import { States } from 'src/admin/entities/state.entity';
 import { UpdateOrderDto } from '../dto/update-order.dto';
+import { OrdersItemsItems } from '../entities/order-item-item.entity';
+import { Items } from '../entities/item.entity';
 
 @Injectable()
 export class OrdersService {
@@ -26,45 +28,79 @@ export class OrdersService {
 
     @InjectRepository(States)
     private stateRepository: Repository<States>,
+
+    @InjectRepository(OrdersItemsItems)
+    private orderItemRepository: Repository<OrdersItemsItems>,
+
+    @InjectRepository(Items)
+    private itemRepository: Repository<Items>,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
+    console.log(createOrderDto);
+
+    // Crear una nueva orden
     const newOrder = this.orderRepository.create(createOrderDto);
 
+    // Establecer las relaciones
     if (createOrderDto.clientIdClient) {
-      const client = await this.clientRepository.findOne({
+      newOrder.client = await this.clientRepository.findOne({
         where: { id_client: createOrderDto.clientIdClient },
       });
-      newOrder.client = client;
     }
 
     if (createOrderDto.customerIdCustomer) {
-      const customer = await this.customerRepository.findOne({
+      newOrder.customer = await this.customerRepository.findOne({
         where: { id_customer: createOrderDto.customerIdCustomer },
       });
-      newOrder.customer = customer;
     }
 
     if (createOrderDto.paymentTypeIdPaymentType) {
-      const paymentType = await this.paymentTypeRepository.findOne({
+      newOrder.paymentType = await this.paymentTypeRepository.findOne({
         where: { id_payment_type: createOrderDto.paymentTypeIdPaymentType },
       });
-      newOrder.paymentType = paymentType;
     }
 
     if (createOrderDto.stateIdState) {
-      const state = await this.stateRepository.findOne({
+      newOrder.state = await this.stateRepository.findOne({
         where: { id_state: createOrderDto.stateIdState },
       });
-      newOrder.state = state;
     }
 
-    return await this.orderRepository.save(newOrder);
+    const savedOrder = await this.orderRepository.save(newOrder);
+
+    if (createOrderDto.items && createOrderDto.items.length > 0) {
+      const orderItems = await Promise.all(
+        createOrderDto.items.map(async (item) => {
+          const orderItem = this.orderItemRepository.create({
+            itemIdItem: item.itemIdItem,
+            orderIdOrder: savedOrder.id_order,
+            quantity: item.quantity,
+            subtotal: item.subtotal,
+          });
+
+          orderItem.item = await this.itemRepository.findOne({
+            where: { id_item: item.itemIdItem },
+          });
+
+          return orderItem;
+        }),
+      );
+
+      savedOrder.orderItems = await this.orderItemRepository.save(orderItems);
+    }
+    return savedOrder;
   }
 
   async findAll() {
     const list = await this.orderRepository.find({
-      relations: ['client', 'customer', 'state', 'paymentType'],
+      relations: [
+        'client',
+        'customer',
+        'state',
+        'paymentType',
+        'orderItems.item',
+      ],
       where: { status: 1 },
     });
     if (!list.length) {
@@ -76,7 +112,13 @@ export class OrdersService {
   async findOne(id: number) {
     const order = await this.orderRepository.findOne({
       where: { id_order: id, status: 1 },
-      relations: ['client', 'customer', 'state', 'paymentType'],
+      relations: [
+        'client',
+        'customer',
+        'state',
+        'paymentType',
+        'orderItems.item',
+      ],
     });
     if (!order) {
       throw new NotFoundException(`This order #${id} not found`);
@@ -86,7 +128,13 @@ export class OrdersService {
 
   async findAllByClient(id: number, limit: number, offset: number) {
     const list = await this.orderRepository.find({
-      relations: ['client', 'customer', 'state', 'paymentType'],
+      relations: [
+        'client',
+        'customer',
+        'state',
+        'paymentType',
+        'orderItems.item',
+      ],
       where: { clientIdClient: id, status: 1 },
       take: limit,
       skip: offset,
@@ -106,7 +154,13 @@ export class OrdersService {
     dateend = new Date(dateend);
     dateend.setHours(23, 59, 59, 999);
     const list = await this.orderRepository.find({
-      relations: ['client', 'customer', 'state', 'paymentType'],
+      relations: [
+        'client',
+        'customer',
+        'state',
+        'paymentType',
+        'orderItems.item',
+      ],
       where: {
         date: Between(datestart, dateend),
         status: 1,
@@ -156,6 +210,28 @@ export class OrdersService {
     }
 
     this.orderRepository.merge(order, updateOrderDto);
+
+    // Si hay items en el DTO de actualización
+    if (updateOrderDto.items && updateOrderDto.items.length > 0) {
+      const orderItems = await Promise.all(
+        updateOrderDto.items.map(async (item) => {
+          const orderItem = this.orderItemRepository.create({
+            itemIdItem: item.itemIdItem,
+            orderIdOrder: order.id_order,
+            quantity: item.quantity,
+            subtotal: item.subtotal,
+          });
+
+          orderItem.item = await this.itemRepository.findOne({
+            where: { id_item: item.itemIdItem },
+          });
+
+          return orderItem;
+        }),
+      );
+
+      order.orderItems = await this.orderItemRepository.save(orderItems);
+    }
 
     return await this.orderRepository.save(order);
   }

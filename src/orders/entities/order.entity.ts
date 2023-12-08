@@ -5,13 +5,13 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  //   OneToMany,
+  OneToMany,
 } from 'typeorm';
 import { Customers } from './../../costumers/entities/customer.entity';
 import { States } from 'src/admin/entities/state.entity';
 import { PaymentType } from 'src/admin/entities/paymentType.entity';
 import { Clients } from 'src/clients/entities/client.entity';
-// import { OrdersItemsItems } from './orders-items-items.entity';
+import { OrdersItemsItems } from './order-item-item.entity';
 
 @Entity()
 export class Orders {
@@ -67,6 +67,6 @@ export class Orders {
   @ManyToOne(() => PaymentType, (paymentType) => paymentType.orders)
   paymentType: PaymentType;
 
-  //   @OneToMany(() => OrdersItemsItems, (orderItem) => orderItem.order)
-  //   orderItems: OrdersItemsItems[];
+  @OneToMany(() => OrdersItemsItems, (orderItem) => orderItem.order)
+  orderItems: OrdersItemsItems[];
 }

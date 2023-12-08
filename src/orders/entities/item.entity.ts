@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { OrdersItemsItems } from './order-item-item.entity';
 
 @Entity()
 export class Items {
@@ -19,4 +20,7 @@ export class Items {
 
   @Column({ type: 'tinyint', default: '1' })
   status: number;
+
+  @OneToMany(() => OrdersItemsItems, (orderItem) => orderItem.order)
+  orderItems: OrdersItemsItems[];
 }

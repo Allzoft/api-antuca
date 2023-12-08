@@ -10,6 +10,7 @@ import { Clients } from 'src/clients/entities/client.entity';
 import { Customers } from 'src/costumers/entities/customer.entity';
 import { PaymentType } from 'src/admin/entities/paymentType.entity';
 import { States } from 'src/admin/entities/state.entity';
+import { OrdersItemsItems } from './entities/order-item-item.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { States } from 'src/admin/entities/state.entity';
       Customers,
       PaymentType,
       States,
+      OrdersItemsItems,
     ]),
   ],
   controllers: [ItemsController, OrdersController],
