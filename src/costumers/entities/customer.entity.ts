@@ -17,6 +17,9 @@ export class Customers {
   @Column({ type: 'varchar', length: 200, nullable: false })
   name: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  lastname: string;
+
   @Column({ type: 'varchar', length: 20, nullable: true })
   id: string;
 

@@ -10,6 +10,10 @@ export class CreateCustomerDto {
   name: string;
 
   @IsString()
+  @IsOptional()
+  lastname: string;
+
+  @IsString()
   id: string;
 
   @IsString()
