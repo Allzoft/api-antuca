@@ -8,6 +8,10 @@ export class CreateItemDto {
   @IsNotEmpty()
   name: string;
 
+  @IsNumber()
+  @IsNotEmpty()
+  type_item: number;
+
   @IsString()
   @IsNotEmpty()
   description: string;

@@ -12,6 +12,9 @@ export class Items {
   @Column({ type: 'text' })
   description: string;
 
+  @Column({ type: 'int', comment: '0: Sopa, 1: Segundos, 2: others' })
+  type_item: number;
+
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 15 })
   price: number;
 
