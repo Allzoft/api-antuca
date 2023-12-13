@@ -13,6 +13,10 @@ export class CreateItemDto {
   type_item: number;
 
   @IsString()
+  @IsOptional()
+  photo: string;
+
+  @IsString()
   @IsNotEmpty()
   description: string;
 
