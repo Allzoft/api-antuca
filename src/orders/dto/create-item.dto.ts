@@ -17,7 +17,7 @@ export class CreateItemDto {
   photo: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   description: string;
 
   @IsNumber()
