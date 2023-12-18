@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsDate,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -42,6 +43,11 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   notes: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['En sala', 'Para llevar'])
+  service_mode: string;
 
   @IsNumber()
   @IsOptional()

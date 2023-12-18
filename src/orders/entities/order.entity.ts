@@ -39,6 +39,9 @@ export class Orders {
   @Column({ type: 'text', nullable: true })
   notes: string;
 
+  @Column({ type: 'varchar', length: 20, default: 'En sala' })
+  service_mode: string;
+
   @Column({ type: 'tinyint', default: 1, comment: '0: deleted; 1: Active' })
   status: number;
 
