@@ -16,8 +16,4 @@ export class CreateOrderItemDto {
   @IsNumber()
   @IsNotEmpty()
   quantity: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  subtotal: number;
 }

@@ -76,7 +76,6 @@ export class OrdersService {
             itemIdItem: item.itemIdItem,
             orderIdOrder: savedOrder.id_order,
             quantity: item.quantity,
-            subtotal: item.subtotal,
           });
 
           orderItem.item = await this.itemRepository.findOne({
@@ -219,7 +218,6 @@ export class OrdersService {
             itemIdItem: item.itemIdItem,
             orderIdOrder: order.id_order,
             quantity: item.quantity,
-            subtotal: item.subtotal,
           });
 
           orderItem.item = await this.itemRepository.findOne({

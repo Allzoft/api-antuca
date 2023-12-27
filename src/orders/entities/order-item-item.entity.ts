@@ -15,9 +15,6 @@ export class OrdersItemsItems {
   @Column({ type: 'int' })
   quantity: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  subtotal: number;
-
   @ManyToOne(() => Orders, (order) => order.orderItems)
   order: Orders;
 
