@@ -24,7 +24,7 @@ export class Orders {
   @Column({ type: 'int' })
   clientIdClient: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'date' })
   date: Date;
 
   @Column({ type: 'int' })

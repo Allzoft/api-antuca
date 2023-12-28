@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { PrimaryGeneratedColumn } from 'typeorm';
 import { CreateOrderItemDto } from './create-order-item.dto';
 
@@ -24,8 +24,8 @@ export class CreateOrderDto {
   @IsNotEmpty()
   clientIdClient: number;
 
-  @IsNotEmpty()
   @IsDate()
+  @Transform(({ value }) => value && new Date(value))
   date: Date;
 
   @IsNumber()
