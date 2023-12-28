@@ -11,6 +11,9 @@ import { Customers } from 'src/costumers/entities/customer.entity';
 import { PaymentType } from 'src/admin/entities/paymentType.entity';
 import { States } from 'src/admin/entities/state.entity';
 import { OrdersItemsItems } from './entities/order-item-item.entity';
+import { DailyAvailability } from './entities/dailyAvailability.entity';
+import { DailyAvailabilitiesController } from './dailyAvailibilities.controller';
+import { DailyAvailabilitysService } from './services/dailyAvailabilities.service';
 
 @Module({
   imports: [
@@ -22,9 +25,14 @@ import { OrdersItemsItems } from './entities/order-item-item.entity';
       PaymentType,
       States,
       OrdersItemsItems,
+      DailyAvailability,
     ]),
   ],
-  controllers: [ItemsController, OrdersController],
-  providers: [ItemsService, OrdersService],
+  controllers: [
+    ItemsController,
+    OrdersController,
+    DailyAvailabilitiesController,
+  ],
+  providers: [ItemsService, OrdersService, DailyAvailabilitysService],
 })
 export class OrdersModule {}
