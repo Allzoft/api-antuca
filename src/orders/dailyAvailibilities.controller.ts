@@ -32,6 +32,14 @@ export class DailyAvailabilitiesController {
     return this.dailyAvailabilitiesService.findAll();
   }
 
+  @Get('/bydates/:datestart/:dateend')
+  findAllBydates(
+    @Param('datestart') datestart: Date,
+    @Param('dateend') dateend: Date,
+  ) {
+    return this.dailyAvailabilitiesService.findAllByDates(datestart, dateend);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.dailyAvailabilitiesService.findOne(+id);

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 
 import { CreateDailyAvailabilityDto } from './../dto/create-dailyAvailability.dto';
 import { UpdateDailyAvailabilityDto } from './../dto/update-dailyAvailability.dto';
@@ -25,6 +25,28 @@ export class DailyAvailabilitysService {
   async findAll() {
     const list = await this.dailyAvailabilityRepository.find({
       where: { status: 1 },
+      relations: ['item'],
+    });
+    if (!list.length) {
+      throw new NotFoundException({ message: 'Empty list' });
+    }
+    return list;
+  }
+
+  async findAllByDates(datestart: Date, dateend: Date) {
+    datestart = new Date(datestart);
+    datestart.setHours(0, 0, 0, 0);
+    dateend = new Date(dateend);
+    dateend.setHours(23, 59, 59, 999);
+    const list = await this.dailyAvailabilityRepository.find({
+      relations: ['item'],
+      where: {
+        date: Between(datestart, dateend),
+        status: 1,
+      },
+      order: {
+        date: 'DESC',
+      },
     });
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });
@@ -35,6 +57,7 @@ export class DailyAvailabilitysService {
   async findOne(id: number) {
     const dailyAvailability = await this.dailyAvailabilityRepository.findOne({
       where: { id_daily_availability: id, status: 1 },
+      relations: ['item'],
     });
     if (!dailyAvailability) {
       throw new NotFoundException(`This dailyAvailability #${id} not found`);
