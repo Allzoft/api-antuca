@@ -24,7 +24,7 @@ export class Clients {
   email: string;
 
   @Exclude()
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable:true })
   password: string;
 
   @Column({ type: 'varchar', length: 255 })
@@ -35,9 +35,6 @@ export class Clients {
 
   @Column({ type: 'varchar', length: 50 })
   phone: string;
-
-  @Column({ type: 'tinyint', default: 1 })
-  isActive: number;
 
   @Column({ type: 'varchar', length: 50 })
   id: string;
@@ -59,13 +56,13 @@ export class Clients {
 
   @CreateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   updated_at: Date;
 

@@ -47,14 +47,13 @@ export class Customers {
 
   @CreateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP',
-    onUpdate: 'CURRENT_TIMESTAMP',
+    nullable: false,
   })
   updated_at: Date;
 

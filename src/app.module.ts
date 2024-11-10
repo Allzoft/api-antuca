@@ -38,8 +38,8 @@ import { MulterModule } from '@nestjs/platform-express';
         password: configService.get<string>('MYSQL_PASSWORD'),
         database: configService.get<string>('MYSQL_DB'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        // synchronize: true, //para sincronizar las entidades con la base de datos
-        // autoLoadEntities: true,
+        synchronize: true, //para sincronizar las entidades con la base de datos
+        autoLoadEntities: true,
         logging: true,
       }),
 
