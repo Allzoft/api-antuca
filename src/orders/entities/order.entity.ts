@@ -13,6 +13,14 @@ import { PaymentType } from 'src/admin/entities/paymentType.entity';
 import { Clients } from 'src/clients/entities/client.entity';
 import { OrdersItemsItems } from './order-item-item.entity';
 
+export enum ServiceMode {
+  EN_SALA =  "En Sala",
+  PARA_LLEVAR = "Para llevar",
+  DELIVERY = "Delivery",
+  MIXTO = "Mixto"
+}
+
+
 @Entity()
 export class Orders {
   @PrimaryGeneratedColumn()
@@ -33,14 +41,18 @@ export class Orders {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   total_amount: number;
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', default: 1 })
   paymentTypeIdPaymentType: number;
 
   @Column({ type: 'text', nullable: true })
   notes: string;
 
-  @Column({ type: 'varchar', length: 20, default: 'En sala' })
-  service_mode: string;
+  @Column({
+    type: 'enum',
+    enum: ServiceMode,
+    default: ServiceMode.EN_SALA,
+  })
+  service_mode: ServiceMode;
 
   @Column({ type: 'tinyint', default: 1, comment: '0: deleted; 1: Active' })
   status: number;

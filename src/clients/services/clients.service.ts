@@ -12,11 +12,15 @@ import { UpdateClientDto } from './../dto/update-client.dto';
 import { Clients } from './../entities/client.entity';
 
 import * as bcrypt from 'bcrypt';
+import { Orders } from 'src/orders/entities/order.entity';
 @Injectable()
 export class ClientsService {
   constructor(
     @InjectRepository(Clients)
     private clientRepository: Repository<Clients>,
+
+    @InjectRepository(Orders)
+    private ordersRepository: Repository<Orders>,
   ) {}
 
   async create(createClientDto: CreateClientDto) {
@@ -34,17 +38,32 @@ export class ClientsService {
       newClient.password = hashPassword;
     }
 
+    newClient.orders = [];
+
     return await this.clientRepository.save(newClient);
   }
 
   async findAll() {
     const list = await this.clientRepository.find({
       where: { status: 1 },
+      order: {created_at: 'DESC'}
     });
+
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });
     }
-    return list;
+    const listWithLastOrder = await Promise.all(
+      list.map(async (client) => {
+        client.orders = [];
+        const lastOrder = await this.ordersRepository.findOne({
+          where: { clientIdClient: client.id_client },
+          order: { date: 'DESC' },
+        });
+        return { ...client, orders: [lastOrder] };
+      }),
+    );
+
+    return listWithLastOrder;
   }
 
   async findOne(id: number) {

@@ -12,8 +12,6 @@ export class CreateStatesDto {
   @IsString()
   type: string;
 
-  @IsString()
-  color: string;
 
   @IsNumber()
   @IsOptional()

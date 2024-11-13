@@ -23,9 +23,6 @@ export class States {
   @Column({ type: 'int' })
   priority: number;
 
-  @Column({ type: 'varchar', length: undefined })
-  color: string;
-
   @Column({ type: 'tinyint', default: 1 })
   status: number;
 

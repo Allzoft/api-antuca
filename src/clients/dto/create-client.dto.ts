@@ -17,9 +17,10 @@ export class CreateClientDto {
   @IsString()
   @IsOptional()
   lastname: string;
-
+  
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @IsOptional()
   @IsString()
@@ -36,10 +37,6 @@ export class CreateClientDto {
   @IsOptional()
   @IsString()
   phone?: string;
-
-  @IsNumber()
-  @IsOptional()
-  isActive?: number;
 
   @IsOptional()
   @IsString()

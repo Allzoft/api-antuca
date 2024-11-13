@@ -1,6 +1,7 @@
 import {
   IsArray,
   IsDate,
+  IsEnum,
   IsIn,
   IsNotEmpty,
   IsNumber,
@@ -11,6 +12,7 @@ import {
 import { Transform, Type } from 'class-transformer';
 import { PrimaryGeneratedColumn } from 'typeorm';
 import { CreateOrderItemDto } from './create-order-item.dto';
+import { ServiceMode } from '../entities/order.entity';
 
 export class CreateOrderDto {
   @PrimaryGeneratedColumn()
@@ -44,10 +46,9 @@ export class CreateOrderDto {
   @IsOptional()
   notes: string;
 
-  @IsString()
+  @IsEnum(ServiceMode)
   @IsNotEmpty()
-  @IsIn(['En sala', 'Para llevar'])
-  service_mode: string;
+  service_mode: ServiceMode;
 
   @IsNumber()
   @IsOptional()
