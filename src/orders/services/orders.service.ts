@@ -10,6 +10,7 @@ import { States } from 'src/admin/entities/state.entity';
 import { UpdateOrderDto } from '../dto/update-order.dto';
 import { OrdersItemsItems } from '../entities/order-item-item.entity';
 import { Items } from '../entities/item.entity';
+import { OrdersGateway } from '../dailyMonitor.websocket';
 
 @Injectable()
 export class OrdersService {
@@ -34,6 +35,8 @@ export class OrdersService {
 
     @InjectRepository(Items)
     private itemRepository: Repository<Items>,
+
+    private readonly ordersGateway: OrdersGateway,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
@@ -88,6 +91,8 @@ export class OrdersService {
 
       savedOrder.orderItems = await this.orderItemRepository.save(orderItems);
     }
+
+    this.ordersGateway.emitNewOrder(savedOrder);
     return savedOrder;
   }
 
@@ -231,7 +236,9 @@ export class OrdersService {
       order.orderItems = await this.orderItemRepository.save(orderItems);
     }
 
-    return await this.orderRepository.save(order);
+    const savedOrder = await this.orderRepository.save(order);
+    this.ordersGateway.emitUpdatedOrder(savedOrder);
+    return savedOrder;
   }
 
   async remove(id: number) {
@@ -242,6 +249,8 @@ export class OrdersService {
 
     this.orderRepository.merge(item, deleteOrder);
 
-    return this.orderRepository.save(item);
+    const deleteItem = await this.orderRepository.save(item);
+    this.ordersGateway.emitDeletedOrder(deleteItem);
+    return deleteItem;
   }
 }

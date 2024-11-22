@@ -14,6 +14,7 @@ import { OrdersItemsItems } from './entities/order-item-item.entity';
 import { DailyAvailability } from './entities/dailyAvailability.entity';
 import { DailyAvailabilitiesController } from './dailyAvailibilities.controller';
 import { DailyAvailabilitysService } from './services/dailyAvailabilities.service';
+import { OrdersGateway } from './dailyMonitor.websocket';
 
 @Module({
   imports: [
@@ -33,6 +34,6 @@ import { DailyAvailabilitysService } from './services/dailyAvailabilities.servic
     OrdersController,
     DailyAvailabilitiesController,
   ],
-  providers: [ItemsService, OrdersService, DailyAvailabilitysService],
+  providers: [ItemsService, OrdersService, DailyAvailabilitysService, OrdersGateway],
 })
 export class OrdersModule {}
