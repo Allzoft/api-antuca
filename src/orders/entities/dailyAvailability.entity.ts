@@ -18,6 +18,6 @@ export class DailyAvailability {
   @Column({ type: 'tinyint', default: 1, comment: '0: deleted; 1: Active' })
   status: number;
 
-  @ManyToOne(() => Items, (item) => item.dailyAvailability)
+  @ManyToOne(() => Items, (item) => item.dailyAvailabilities)
   item: Items;
 }

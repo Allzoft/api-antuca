@@ -60,7 +60,7 @@ export class OrdersGateway
         ],
         where: { status: 1, date: Between(datestart, dateend) },
         order: {
-          date: 'DESC',
+          created_at: 'DESC',
         },
       });
       client.emit('ordersList', orders);

@@ -106,6 +106,9 @@ export class OrdersService {
         'orderItems.item',
       ],
       where: { status: 1 },
+      order: {
+        date: 'DESC',
+      },
     });
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });
@@ -217,8 +220,13 @@ export class OrdersService {
 
     // Si hay items en el DTO de actualización
     if (updateOrderDto.items && updateOrderDto.items.length > 0) {
+      await this.orderItemRepository.delete({ orderIdOrder: order.id_order });
+
+
       const orderItems = await Promise.all(
         updateOrderDto.items.map(async (item) => {
+          console.log(order.id_order);
+          
           const orderItem = this.orderItemRepository.create({
             itemIdItem: item.itemIdItem,
             orderIdOrder: order.id_order,
@@ -232,9 +240,13 @@ export class OrdersService {
           return orderItem;
         }),
       );
-
+      console.log(orderItems);
+      
       order.orderItems = await this.orderItemRepository.save(orderItems);
     }
+
+    console.log(order);
+    
 
     const savedOrder = await this.orderRepository.save(order);
     this.ordersGateway.emitUpdatedOrder(savedOrder);

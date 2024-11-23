@@ -23,9 +23,6 @@ export class Items {
   price: number;
 
   @Column({ type: 'tinyint', default: '1' })
-  available: number;
-
-  @Column({ type: 'tinyint', default: '1' })
   status: number;
 
   @OneToMany(() => OrdersItemsItems, (orderItem) => orderItem.order)
@@ -35,5 +32,5 @@ export class Items {
     () => DailyAvailability,
     (dailyAvailability) => dailyAvailability.item,
   )
-  dailyAvailability: DailyAvailability[];
+  dailyAvailabilities: DailyAvailability[];
 }

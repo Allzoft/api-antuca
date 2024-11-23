@@ -27,6 +27,11 @@ export class ItemsService {
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });
     }
+
+    list.forEach((e) => {
+      e.dailyAvailabilities = [];
+    });
+
     return list;
   }
 

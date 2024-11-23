@@ -24,10 +24,6 @@ export class CreateItemDto {
   price: number;
 
   @IsNumber()
-  @IsNotEmpty()
-  available: number;
-
-  @IsNumber()
   @IsOptional()
   status: number;
 }
