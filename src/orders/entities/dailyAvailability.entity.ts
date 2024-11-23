@@ -12,6 +12,9 @@ export class DailyAvailability {
   @Column({ type: 'int' })
   quantity: number;
 
+  @Column({ type: 'int', default: 0 })
+  sold: number;
+
   @Column({ type: 'date' })
   date: Date;
 

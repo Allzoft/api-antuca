@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orders } from '../entities/order.entity';
-import { Repository, Between } from 'typeorm';
+import { Repository, Between, Not } from 'typeorm';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { Clients } from 'src/clients/entities/client.entity';
 import { Customers } from 'src/costumers/entities/customer.entity';
@@ -11,6 +11,7 @@ import { UpdateOrderDto } from '../dto/update-order.dto';
 import { OrdersItemsItems } from '../entities/order-item-item.entity';
 import { Items } from '../entities/item.entity';
 import { OrdersGateway } from '../dailyMonitor.websocket';
+import { DailyAvailability } from '../entities/dailyAvailability.entity';
 
 @Injectable()
 export class OrdersService {
@@ -35,6 +36,9 @@ export class OrdersService {
 
     @InjectRepository(Items)
     private itemRepository: Repository<Items>,
+
+    @InjectRepository(DailyAvailability)
+    private dailyAvailabilitesRepository: Repository<DailyAvailability>,
 
     private readonly ordersGateway: OrdersGateway,
   ) {}
@@ -90,6 +94,40 @@ export class OrdersService {
       );
 
       savedOrder.orderItems = await this.orderItemRepository.save(orderItems);
+
+      // Actualizar la propiedad sold de DailyAvailability
+      for (const orderItem of orderItems) {
+        const dailyAvailability =
+          await this.dailyAvailabilitesRepository.findOne({
+            where: {
+              date: savedOrder.date,
+              itemIdItem: orderItem.itemIdItem,
+            },
+          });
+
+        if (dailyAvailability) {
+          const orderItemsForSumatory = await this.orderItemRepository.find({
+            where: {
+              itemIdItem: orderItem.itemIdItem,
+              order: {
+                status: 1,
+                date: savedOrder.date,
+                state: { priority: Not(0) },
+              },
+            },
+          });
+
+          const allQuantity = orderItemsForSumatory.reduce(
+            (total, orderItem) => {
+              return total + +orderItem.quantity;
+            },
+            0,
+          );
+
+          dailyAvailability.sold = allQuantity;
+          await this.dailyAvailabilitesRepository.save(dailyAvailability);
+        }
+      }
     }
 
     this.ordersGateway.emitNewOrder(savedOrder);
@@ -222,11 +260,10 @@ export class OrdersService {
     if (updateOrderDto.items && updateOrderDto.items.length > 0) {
       await this.orderItemRepository.delete({ orderIdOrder: order.id_order });
 
-
       const orderItems = await Promise.all(
         updateOrderDto.items.map(async (item) => {
           console.log(order.id_order);
-          
+
           const orderItem = this.orderItemRepository.create({
             itemIdItem: item.itemIdItem,
             orderIdOrder: order.id_order,
@@ -241,14 +278,40 @@ export class OrdersService {
         }),
       );
       console.log(orderItems);
-      
+
       order.orderItems = await this.orderItemRepository.save(orderItems);
+
     }
 
     console.log(order);
-    
 
     const savedOrder = await this.orderRepository.save(order);
+
+    const dailyAvailabilities = await this.dailyAvailabilitesRepository.find({
+      where: { date: savedOrder.date },
+    });
+
+    if (dailyAvailabilities.length > 0) {
+      for (const dailyAvailability of dailyAvailabilities) {
+        const orderItemsForSumatory = await this.orderItemRepository.find({
+          where: {
+            itemIdItem: dailyAvailability.itemIdItem,
+            order: {
+              status: 1,
+              date: savedOrder.date,
+              state: { priority: Not(0) },
+            },
+          },
+        });
+        const allQuantity = orderItemsForSumatory.reduce((total, orderItem) => {
+          return total + +orderItem.quantity;
+        }, 0);
+
+        dailyAvailability.sold = allQuantity;
+        await this.dailyAvailabilitesRepository.save(dailyAvailability);
+      }
+    }
+
     this.ordersGateway.emitUpdatedOrder(savedOrder);
     return savedOrder;
   }
@@ -262,6 +325,32 @@ export class OrdersService {
     this.orderRepository.merge(item, deleteOrder);
 
     const deleteItem = await this.orderRepository.save(item);
+
+    const dailyAvailabilities = await this.dailyAvailabilitesRepository.find({
+      where: { date: deleteItem.date },
+    });
+
+    if (dailyAvailabilities.length > 0) {
+      for (const dailyAvailability of dailyAvailabilities) {
+        const orderItemsForSumatory = await this.orderItemRepository.find({
+          where: {
+            itemIdItem: dailyAvailability.itemIdItem,
+            order: {
+              status: 1,
+              date: deleteItem.date,
+              state: { priority: Not(0) },
+            },
+          },
+        });
+        const allQuantity = orderItemsForSumatory.reduce((total, orderItem) => {
+          return total + +orderItem.quantity;
+        }, 0);
+
+        dailyAvailability.sold = allQuantity;
+        await this.dailyAvailabilitesRepository.save(dailyAvailability);
+      }
+    }
+
     this.ordersGateway.emitDeletedOrder(deleteItem);
     return deleteItem;
   }

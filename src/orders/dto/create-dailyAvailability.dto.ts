@@ -14,6 +14,10 @@ export class CreateDailyAvailabilityDto {
   @IsNotEmpty()
   quantity: number;
 
+  @IsNumber()
+  @IsOptional()
+  sold: number;
+
   @IsDate()
   @Transform(({ value }) => value && new Date(value))
   date: Date;
