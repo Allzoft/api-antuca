@@ -45,7 +45,7 @@ export class OrdersGateway
   public async handleConnection(client: Socket) {
     const datestart = new Date();
     datestart.setHours(0, 0, 0, 0);
-    datestart.setHours(datestart.getHours() - 4);  // Restar 4 horas
+    datestart.setHours(datestart.getHours() - 4);  
     
     const dateend = new Date();
     dateend.setHours(23, 59, 59, 999);
