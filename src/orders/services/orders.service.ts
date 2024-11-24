@@ -196,8 +196,10 @@ export class OrdersService {
   async findAllByDates(datestart: Date, dateend: Date) {
     datestart = new Date(datestart);
     datestart.setHours(0, 0, 0, 0);
+    datestart.setHours(dateend.getHours() - 4);
     dateend = new Date(dateend);
     dateend.setHours(23, 59, 59, 999);
+    dateend.setHours(dateend.getHours() - 4);
     const list = await this.orderRepository.find({
       relations: [
         'client',
