@@ -193,13 +193,9 @@ export class OrdersService {
     return list;
   }
 
-  async findAllByDates(datestart: Date, dateend: Date) {
-    datestart = new Date(datestart);
-    datestart.setHours(0, 0, 0, 0);
-    datestart.setHours(dateend.getHours() - 4);
-    dateend = new Date(dateend);
-    dateend.setHours(23, 59, 59, 999);
-    dateend.setHours(dateend.getHours() - 4);
+  async findAllByDates(datestart: any, dateend: any) {
+    datestart = datestart + 'T00:00:00.000Z';
+    dateend = dateend + 'T23:59:59.999Z';
     const list = await this.orderRepository.find({
       relations: [
         'client',
@@ -282,7 +278,6 @@ export class OrdersService {
       console.log(orderItems);
 
       order.orderItems = await this.orderItemRepository.save(orderItems);
-
     }
 
     console.log(order);
