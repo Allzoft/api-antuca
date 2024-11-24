@@ -10,6 +10,7 @@ import { CreateDailyAvailabilityDto } from './../dto/create-dailyAvailability.dt
 import { UpdateDailyAvailabilityDto } from './../dto/update-dailyAvailability.dto';
 
 import { DailyAvailability } from './../entities/dailyAvailability.entity';
+import { start } from 'repl';
 
 @Injectable()
 export class DailyAvailabilitysService {
@@ -51,13 +52,23 @@ export class DailyAvailabilitysService {
     return list;
   }
 
-  async findAllByDates(datestart: Date, dateend: Date) {
-    datestart = new Date(datestart);
-    datestart.setHours(0, 0, 0, 0);
-    // datestart.setHours(dateend.getHours() - 4);
-    dateend = new Date(dateend);
-    dateend.setHours(23, 59, 59, 999);
-    // dateend.setHours(dateend.getHours() - 4);
+  async findAllByDates(datestart: any, dateend: any) {
+    // console.log(datestart);
+    
+    // console.log(typeof dateend); // Debe ser 'object'
+    
+    // datestart = new Date(datestart);
+    // console.log(datestart);
+    // console.log(typeof datestart); // Debe ser 'object'
+    
+    // datestart.setHours(0, 0, 0, 0);
+    // console.log(start);
+    // dateend = new Date(dateend);
+    // dateend.setHours(23, 59, 59, 999);
+    // console.log(dateend);
+    datestart = datestart + 'T00:00:00.000Z'
+    dateend = dateend + 'T23:59:59.999Z'
+    
     const list = await this.dailyAvailabilityRepository.find({
       relations: { item: true },
       where: {
