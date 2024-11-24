@@ -45,8 +45,11 @@ export class OrdersGateway
   public async handleConnection(client: Socket) {
     const datestart = new Date();
     datestart.setHours(0, 0, 0, 0);
+    datestart.setHours(datestart.getHours() - 4);  // Restar 4 horas
+    
     const dateend = new Date();
     dateend.setHours(23, 59, 59, 999);
+    dateend.setHours(dateend.getHours() - 4);
     try {
       console.log('Client connected:', client.id);
       client.emit('message', `Conexión exitosa: ${client.id}`);
