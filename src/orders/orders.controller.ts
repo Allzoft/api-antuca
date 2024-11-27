@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Res,
 } from '@nestjs/common';
 import { OrdersService } from './services/orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('Orders')
@@ -54,6 +56,19 @@ export class OrdersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ordersService.findOne(+id);
+  }
+
+  @Get('impressOrder/:id')
+  async generateVihDoc(@Param('id') id: string, @Res() res): Promise<void> {
+    const buffer = await this.ordersService.generateOrderDoc(+id);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment: filename-example.pdf',
+      'Content-Length': buffer.length,
+    });
+
+    res.end(buffer);
   }
 
   @Patch(':id')

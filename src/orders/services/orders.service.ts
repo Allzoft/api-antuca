@@ -13,6 +13,9 @@ import { Items } from '../entities/item.entity';
 import { OrdersGateway } from '../dailyMonitor.websocket';
 import { DailyAvailability } from '../entities/dailyAvailability.entity';
 
+import PDFDocument = require('pdfkit');
+import { Buffer } from 'buffer';
+
 @Injectable()
 export class OrdersService {
   constructor(
@@ -350,5 +353,123 @@ export class OrdersService {
 
     this.ordersGateway.emitDeletedOrder(deleteItem);
     return deleteItem;
+  }
+
+  async generateOrderDoc(id: number): Promise<Buffer> {
+    const order = await this.orderRepository.findOne({
+      where: { id_order: id },
+      relations: [
+        'client',
+        'customer',
+        'state',
+        'paymentType',
+        'orderItems.item',
+      ],
+    });
+
+    return new Promise((resolve, reject) => {
+      const doc = new PDFDocument({
+        size: [227, 841.88],
+        margins: { top: 10, bottom: 20, left: 25, right: 15 },
+      });
+
+      doc
+        .fontSize(16)
+        .font('Helvetica-Bold')
+        .text(
+          order.client.name.toLocaleUpperCase() +
+            ' ' +
+            order.client.lastname.toLocaleUpperCase(),
+          {
+            align: 'center',
+          },
+        );
+
+      doc
+        .fontSize(10)
+        .font('Helvetica-Bold')
+        .text(
+          `--------------------------------------------------------`,
+          25,
+          doc.y,
+          {
+            align: 'center',
+          },
+        );
+
+      const currentY = doc.y;
+
+      doc
+        .fontSize(8)
+        .font('Helvetica')
+        .text(
+          this.extractTimeCreatedAt(order.created_at.toString()),
+          25,
+          currentY,
+          {
+            align: 'left',
+          },
+        );
+
+      doc
+        .fontSize(10)
+        .font('Helvetica-Bold')
+        .text(`Bs. ${order.total_amount}`, 60, currentY, {
+          align: 'right',
+          width: doc.page.width - 60 - 15,
+        });
+
+      doc
+
+        .font('Helvetica-Bold')
+        .text(
+          `--------------------------------------------------------`,
+          25,
+          doc.y,
+          {
+            align: 'center',
+          },
+        );
+
+      doc.moveDown();
+
+      order.orderItems.forEach((orderItems) => {
+        doc
+          .fontSize(12)
+          .font('Helvetica')
+          .text(orderItems.quantity + ' - ' + orderItems.item.name, 30, doc.y, {
+            align: 'left',
+          });
+      });
+
+      doc.moveDown();
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(16)
+        .text(order.service_mode.toLocaleUpperCase(), {
+          align: 'center',
+        });
+
+      // Almacena el PDF en un buffer
+      const buffers: Buffer[] = [];
+      doc.on('data', buffers.push.bind(buffers));
+      doc.on('end', () => {
+        const pdfBuffer = Buffer.concat(buffers);
+
+        resolve(pdfBuffer);
+      });
+
+      doc.on('error', (error) => {
+        reject(error);
+      });
+
+      doc.end();
+    });
+  }
+
+  private extractTimeCreatedAt(datetime: string): string | null {
+    const match = datetime.match(/\b(\d{2}:\d{2})\b/);
+    return match ? match[1] : null;
   }
 }
