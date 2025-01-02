@@ -380,6 +380,8 @@ export class OrdersService {
           order.client.name.toLocaleUpperCase() +
             ' ' +
             order.client.lastname.toLocaleUpperCase(),
+          doc.x,
+          20,
           {
             align: 'center',
           },
@@ -442,6 +444,16 @@ export class OrdersService {
           });
       });
 
+      if (order.notes) {
+        doc.moveDown();
+        doc
+          .fontSize(10)
+          .font('Helvetica')
+          .text('Notas: ' + order.notes, 25, doc.y, {
+            align: 'left',
+          });
+      }
+
       doc.moveDown();
 
       doc
@@ -449,6 +461,14 @@ export class OrdersService {
         .fontSize(16)
         .text(order.service_mode.toLocaleUpperCase(), {
           align: 'center',
+        });
+
+      doc
+        .fontSize(10)
+        .font('Helvetica-Bold')
+        .text(`ID: ${order.id_order}`, 60, 5, {
+          align: 'right',
+          width: doc.page.width - 60 - 15,
         });
 
       // Almacena el PDF en un buffer

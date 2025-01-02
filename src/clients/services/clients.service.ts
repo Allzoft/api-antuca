@@ -46,7 +46,7 @@ export class ClientsService {
   async findAll() {
     const list = await this.clientRepository.find({
       where: { status: 1 },
-      order: {created_at: 'DESC'}
+      order: { created_at: 'DESC' },
     });
 
     if (!list.length) {
@@ -89,19 +89,27 @@ export class ClientsService {
       );
     }
   }
-
   async update(id: number, updateClientDto: UpdateClientDto) {
     const item = await this.clientRepository.findOneBy({ id_client: id });
-
+  
     if (updateClientDto.password) {
       const hashPassword = await bcrypt.hash(updateClientDto.password, 10);
       updateClientDto.password = hashPassword;
     }
     this.clientRepository.merge(item, updateClientDto);
-
-    return this.clientRepository.save(item);
+  
+    let savedClient = await this.clientRepository.save(item);
+  
+    savedClient.orders = [];
+    const lastOrder = await this.ordersRepository.findOne({
+      where: { clientIdClient: savedClient.id_client },
+      order: { date: 'DESC' },
+    });
+    savedClient = { ...savedClient, orders: [lastOrder] };
+  
+    return savedClient;
   }
-
+  
   async remove(id: number) {
     const item = await this.clientRepository.findOneBy({ id_client: id });
     const deleteClient: UpdateClientDto = {

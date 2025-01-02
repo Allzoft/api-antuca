@@ -58,6 +58,7 @@ export class OrdersController {
     return this.ordersService.findOne(+id);
   }
 
+  @Public()
   @Get('impressOrder/:id')
   async generateVihDoc(@Param('id') id: string, @Res() res): Promise<void> {
     const buffer = await this.ordersService.generateOrderDoc(+id);
