@@ -7,7 +7,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
+import { Restaurants } from 'src/costumers/entities/restaurant.entity';
 
 @Entity()
 export class Clients {
@@ -54,6 +56,9 @@ export class Clients {
   @Column({ type: 'tinyint', default: 1, comment: '1: show: 0: deleted' })
   status: number;
 
+  @Column({ type: 'int', nullable: true })
+  restaurantIdRestaurant: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     nullable: false,
@@ -68,4 +73,7 @@ export class Clients {
 
   @OneToMany(() => Orders, (order) => order.client)
   orders: Orders[];
+
+  @ManyToOne(() => Restaurants, (restaurant) => restaurant.clients)
+  restaurant: Restaurants;
 }

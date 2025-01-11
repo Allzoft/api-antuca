@@ -12,14 +12,14 @@ import { States } from 'src/admin/entities/state.entity';
 import { PaymentType } from 'src/admin/entities/paymentType.entity';
 import { Clients } from 'src/clients/entities/client.entity';
 import { OrdersItemsItems } from './order-item-item.entity';
+import { Restaurants } from 'src/costumers/entities/restaurant.entity';
 
 export enum ServiceMode {
-  EN_SALA =  "En Sala",
-  PARA_LLEVAR = "Para llevar",
-  DELIVERY = "Delivery",
-  MIXTO = "Mixto"
+  EN_SALA = 'En Sala',
+  PARA_LLEVAR = 'Para llevar',
+  DELIVERY = 'Delivery',
+  MIXTO = 'Mixto',
 }
-
 
 @Entity()
 export class Orders {
@@ -54,6 +54,9 @@ export class Orders {
   })
   service_mode: ServiceMode;
 
+  @Column({ type: 'int', nullable: true })
+  restaurantIdRestaurant: number;
+
   @Column({ type: 'tinyint', default: 1, comment: '0: deleted; 1: Active' })
   status: number;
 
@@ -71,6 +74,9 @@ export class Orders {
 
   @ManyToOne(() => Customers, (customer) => customer.orders)
   customer: Customers;
+
+  @ManyToOne(() => Restaurants, (restaurant) => restaurant.orders)
+  restaurant: Restaurants;
 
   @ManyToOne(() => Clients, (client) => client.orders)
   client: Clients;

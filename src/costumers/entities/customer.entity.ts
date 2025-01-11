@@ -7,7 +7,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
+import { Restaurants } from './restaurant.entity';
 
 @Entity()
 export class Customers {
@@ -45,6 +47,9 @@ export class Customers {
   @Column({ type: 'tinyint', default: 1, comment: '0: deleted; 1: Active' })
   status: number;
 
+  @Column({ type: 'int', nullable: true })
+  restaurantIdRestaurant: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     nullable: false,
@@ -59,4 +64,7 @@ export class Customers {
 
   @OneToMany(() => Orders, (order) => order.customer)
   orders: Orders[];
+
+  @ManyToOne(()=> Restaurants, restaurant => restaurant.customers)
+  restaurant: Restaurants;
 }
