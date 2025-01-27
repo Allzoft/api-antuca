@@ -21,7 +21,7 @@ export class Restaurants {
   id_restaurant: number;
 
   @Column({ type: 'varchar', length: 200, nullable: false })
-  name: string;
+  name: string; 
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   logo_image: string;
