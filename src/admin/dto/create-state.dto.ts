@@ -1,5 +1,6 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PrimaryGeneratedColumn } from 'typeorm';
+import { StateType } from '../entities/state.entity';
 
 export class CreateStatesDto {
   @PrimaryGeneratedColumn()
@@ -8,9 +9,10 @@ export class CreateStatesDto {
   @IsString()
   @IsNotEmpty()
   name: string;
-
-  @IsString()
-  type: string;
+  
+  @IsNotEmpty()
+  @IsEnum(StateType)
+  type: StateType;
 
 
   @IsNumber()

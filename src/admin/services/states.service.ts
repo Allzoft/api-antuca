@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Type } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateStatesDto } from '../dto/create-state.dto';
 import { UpdateStatesDto } from '../dto/update-state.dto';
-import { States } from '../entities/state.entity';
+import { States, StateType } from '../entities/state.entity';
+import { State } from 'joi';
 
 @Injectable()
 export class StatesService {
@@ -27,9 +28,9 @@ export class StatesService {
     return list;
   }
 
-  async findAllByType(typo: string) {
+  async findAllByType(type: StateType) {
     const list = await this.statusRepository.find({
-      where: { type: typo, status: 1 },
+      where: { type: type, status: 1 },
       order: {
         priority: 'ASC',
       },

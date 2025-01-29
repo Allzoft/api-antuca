@@ -13,6 +13,7 @@ import { CreateStatesDto } from './dto/create-state.dto';
 import { UpdateStatesDto } from './dto/update-state.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { StateType } from './entities/state.entity';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('admin')
@@ -30,9 +31,9 @@ export class StatesController {
     return this.statusService.findAll();
   }
 
-  @Get('/bytype/:id')
-  findAllByclient(@Param('id') id: string) {
-    return this.statusService.findAllByType(id);
+  @Get('/bytype/:type')
+  findAllByclient(@Param('type') type: StateType) {
+    return this.statusService.findAllByType(type);
   }
 
   @Get(':id')
