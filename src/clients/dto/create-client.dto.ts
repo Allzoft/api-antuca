@@ -9,6 +9,7 @@ import {
 import { PrimaryGeneratedColumn } from 'typeorm';
 import { TypeBusiness } from '../entities/client.entity';
 import { Gender } from 'src/enums/gender.enum';
+import { Exclude } from 'class-transformer';
 export class CreateClientDto {
   @PrimaryGeneratedColumn()
   id_client?: number;
@@ -24,10 +25,6 @@ export class CreateClientDto {
   @IsOptional()
   @IsEmail()
   email?: string;
-
-  @IsOptional()
-  @IsString()
-  password?: string;
 
   @IsOptional()
   @IsString()
@@ -47,7 +44,7 @@ export class CreateClientDto {
 
   @IsOptional()
   @IsEnum(TypeBusiness)
-  type_business: number;
+  type_business: TypeBusiness;
 
   @IsNotEmpty()
   @IsEnum(Gender)

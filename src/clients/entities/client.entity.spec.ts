@@ -11,7 +11,6 @@ describe('Clients Entity', () => {
     client.name = 'John';
     client.lastname = 'Doe';
     client.email = 'john.doe@example.com';
-    client.password = 'securepassword';
     client.photo = 'profile.jpg';
     client.code_country = '+1';
     client.phone = '1234567890';
@@ -32,7 +31,6 @@ describe('Clients Entity', () => {
     expect(client.name).toBe('John');
     expect(client.lastname).toBe('Doe');
     expect(client.email).toBe('john.doe@example.com');
-    expect(client.password).toBe('securepassword');
     expect(client.photo).toBe('profile.jpg');
     expect(client.code_country).toBe('+1');
     expect(client.phone).toBe('1234567890');

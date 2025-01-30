@@ -31,10 +31,6 @@ export class Clients {
   @Column({ type: 'varchar', length: 100, nullable: true })
   email: string;
 
-  @Exclude()
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  password: string;
-
   @Column({ type: 'varchar', length: 255 })
   photo: string;
 
