@@ -90,7 +90,7 @@ describe('StatesController', () => {
       ];
       jest.spyOn(service, 'findAllByType').mockResolvedValue(states);
 
-      const result = await controller.findAllByclient(StateType.ORDER_STATUS);
+      const result = await controller.findAllByType(StateType.ORDER_STATUS);
 
       expect(result).toEqual(states);
       expect(service.findAllByType).toHaveBeenCalledWith(
@@ -104,7 +104,7 @@ describe('StatesController', () => {
         .mockRejectedValue(new NotFoundException());
 
       await expect(
-        controller.findAllByclient(StateType.ORDER_STATUS),
+        controller.findAllByType(StateType.ORDER_STATUS),
       ).rejects.toThrow(NotFoundException);
     });
   });

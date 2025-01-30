@@ -4,8 +4,11 @@ import {
   IsNumber,
   IsString,
   IsOptional,
+  IsEnum,
 } from 'class-validator';
 import { PrimaryGeneratedColumn } from 'typeorm';
+import { TypeBusiness } from '../entities/client.entity';
+import { Gender } from 'src/enums/gender.enum';
 export class CreateClientDto {
   @PrimaryGeneratedColumn()
   id_client?: number;
@@ -17,7 +20,7 @@ export class CreateClientDto {
   @IsString()
   @IsOptional()
   lastname: string;
-  
+
   @IsOptional()
   @IsEmail()
   email?: string;
@@ -42,12 +45,13 @@ export class CreateClientDto {
   @IsString()
   id?: string;
 
-  @IsNumber()
+  @IsOptional()
+  @IsEnum(TypeBusiness)
   type_business: number;
 
-  @IsOptional()
-  @IsString()
-  gender?: string;
+  @IsNotEmpty()
+  @IsEnum(Gender)
+  gender?: Gender;
 
   @IsOptional()
   @IsString()

@@ -10,6 +10,12 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Restaurants } from 'src/costumers/entities/restaurant.entity';
+import { Gender } from 'src/enums/gender.enum';
+
+export enum TypeBusiness {
+  B2B = 'B2B',
+  B2C = 'B2C',
+}
 
 @Entity()
 export class Clients {
@@ -41,11 +47,21 @@ export class Clients {
   @Column({ type: 'varchar', length: 50 })
   id: string;
 
-  @Column({ type: 'int' })
-  type_business: number;
+  @Column({
+    type: 'enum',
+    enum: TypeBusiness,
+    nullable: false,
+    default: TypeBusiness.B2C,
+  })
+  type_business: TypeBusiness;
 
-  @Column({ type: 'varchar', length: 20 })
-  gender: string;
+  @Column({
+    type: 'enum',
+    enum: Gender,
+    nullable: false,
+    default: Gender.MASCULINO,
+  })
+  gender: Gender;
 
   @Column({ type: 'varchar', length: 1000 })
   info: string;
@@ -54,7 +70,7 @@ export class Clients {
   google: number;
 
   @Column({ type: 'tinyint', default: 1, comment: '1: show: 0: deleted' })
-  status: number;
+  status: number = 1;
 
   @Column({ type: 'int', nullable: true })
   restaurantIdRestaurant: number;

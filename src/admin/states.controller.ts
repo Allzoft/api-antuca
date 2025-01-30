@@ -32,7 +32,7 @@ export class StatesController {
   }
 
   @Get('/bytype/:type')
-  findAllByclient(@Param('type') type: StateType) {
+  findAllByType(@Param('type') type: StateType) {
     return this.statusService.findAllByType(type);
   }
 
