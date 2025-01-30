@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateStatesDto } from '../dto/create-state.dto';
 import { UpdateStatesDto } from '../dto/update-state.dto';
 import { States, StateType } from '../entities/state.entity';
-import { State } from 'joi';
 
 @Injectable()
 export class StatesService {
