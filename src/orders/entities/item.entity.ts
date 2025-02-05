@@ -30,7 +30,7 @@ export class Items {
   price: number;
 
   @Column({ type: 'int', nullable: false, default: 1 })
-  restaurantIdResturant: number;
+  restaurantIdRestaurant: number;
 
   @Column({ type: 'tinyint', default: '1' })
   status: number;

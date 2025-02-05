@@ -25,7 +25,7 @@ export class CreateItemDto {
 
   @IsNumber()
   @IsOptional()
-  restaurantIdResturant: number;
+  restaurantIdRestaurant: number;
 
   @IsNumber()
   @IsOptional()
