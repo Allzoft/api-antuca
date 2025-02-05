@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Items } from './item.entity';
+import { Restaurants } from 'src/costumers/entities/restaurant.entity';
 
 @Entity()
 export class DailyAvailability {
@@ -23,4 +24,7 @@ export class DailyAvailability {
 
   @ManyToOne(() => Items, (item) => item.dailyAvailabilities)
   item: Items;
+
+  @ManyToOne(() => Restaurants, (restaurant) => restaurant.dailyAvailabilities)
+  restaurant: Restaurants;
 }

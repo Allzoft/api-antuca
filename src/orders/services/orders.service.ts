@@ -48,10 +48,9 @@ export class OrdersService {
      private userContextService: UserContextService,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto) {
-    console.log(createOrderDto);
+  async create(createOrderDto: CreateOrderDto) {  
+    const restaurantId = this.userContextService.getUser().restaurantIdRestaurant;
 
-    // Crear una nueva orden
     const newOrder = this.orderRepository.create(createOrderDto);
 
     // Establecer las relaciones
@@ -78,6 +77,8 @@ export class OrdersService {
         where: { id_state: createOrderDto.stateIdState },
       });
     }
+
+    newOrder.restaurantIdRestaurant = restaurantId;
 
     const savedOrder = await this.orderRepository.save(newOrder);
 

@@ -10,6 +10,7 @@ import { Customers } from './customer.entity';
 import { Clients } from 'src/clients/entities/client.entity';
 import { Orders } from 'src/orders/entities/order.entity';
 import { Items } from 'src/orders/entities/item.entity';
+import { DailyAvailability } from 'src/orders/entities/dailyAvailability.entity';
 
 export enum TypeSubscription {
   BASIC = 'BASIC',
@@ -96,4 +97,7 @@ export class Restaurants {
 
   @OneToMany(() => Items, (item) => item.restaurant)
   items: Items[];
+
+  @OneToMany(() => DailyAvailability, (dailyAvailability) => dailyAvailability.restaurant)
+  dailyAvailabilities: DailyAvailability[];
 }
