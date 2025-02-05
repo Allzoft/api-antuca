@@ -13,6 +13,7 @@ import { Clients } from './../entities/client.entity';
 
 import * as bcrypt from 'bcrypt';
 import { Orders } from 'src/orders/entities/order.entity';
+import { UserContextService } from 'src/userContext/service/userContext.service';
 @Injectable()
 export class ClientsService {
   constructor(
@@ -21,9 +22,14 @@ export class ClientsService {
 
     @InjectRepository(Orders)
     private ordersRepository: Repository<Orders>,
+
+    private userContextService: UserContextService,
   ) {}
 
   async create(createClientDto: CreateClientDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     const existingClient = await this.clientRepository.findOne({
       where: { email: createClientDto.email },
     });
@@ -34,14 +40,19 @@ export class ClientsService {
 
     const newClient = this.clientRepository.create(createClientDto);
 
+    newClient.restaurantIdRestaurant = restaurantId;
+
     newClient.orders = [];
 
     return await this.clientRepository.save(newClient);
   }
 
   async findAll() {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     const list = await this.clientRepository.find({
-      where: { status: 1 },
+      where: { status: 1, restaurantIdRestaurant: restaurantId },
       order: { created_at: 'DESC' },
     });
 
@@ -63,12 +74,18 @@ export class ClientsService {
   }
 
   async findOne(id: number) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.clientRepository.findOne({
       where: { id_client: id, status: 1 },
     });
     if (!item) {
       throw new NotFoundException(`This client #${id} not found`);
     }
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new BadRequestException('El cliente no pertenece a su restaurante');
+    }
+
     return item;
   }
 
@@ -86,23 +103,36 @@ export class ClientsService {
     }
   }
   async update(id: number, updateClientDto: UpdateClientDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.clientRepository.findOneBy({ id_client: id });
+
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new BadRequestException('El cliente no pertenece a su restaurante');
+    }
+
     this.clientRepository.merge(item, updateClientDto);
-  
+
     let savedClient = await this.clientRepository.save(item);
-  
+
     savedClient.orders = [];
     const lastOrder = await this.ordersRepository.findOne({
       where: { clientIdClient: savedClient.id_client },
       order: { date: 'DESC' },
     });
     savedClient = { ...savedClient, orders: [lastOrder] };
-  
+
     return savedClient;
   }
-  
+
   async remove(id: number) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.clientRepository.findOneBy({ id_client: id });
+
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new BadRequestException('El cliente no pertenece a su restaurante');
+    }
     const deleteClient: UpdateClientDto = {
       status: 0,
     };
