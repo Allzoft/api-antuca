@@ -15,6 +15,7 @@ import { DailyAvailability } from '../entities/dailyAvailability.entity';
 
 import PDFDocument = require('pdfkit');
 import { Buffer } from 'buffer';
+import { UserContextService } from 'src/userContext/service/userContext.service';
 
 @Injectable()
 export class OrdersService {
@@ -44,6 +45,7 @@ export class OrdersService {
     private dailyAvailabilitesRepository: Repository<DailyAvailability>,
 
     private readonly ordersGateway: OrdersGateway,
+     private userContextService: UserContextService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {

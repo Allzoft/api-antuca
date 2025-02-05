@@ -6,12 +6,15 @@ import { CreateItemDto } from './../dto/create-item.dto';
 import { UpdateItemDto } from './../dto/update-item.dto';
 
 import { Items } from './../entities/item.entity';
+import { UserContextService } from 'src/userContext/service/userContext.service';
 
 @Injectable()
 export class ItemsService {
   constructor(
     @InjectRepository(Items)
     private itemRepository: Repository<Items>,
+    
+     private userContextService: UserContextService,
   ) {}
 
   async create(createItemDto: CreateItemDto) {

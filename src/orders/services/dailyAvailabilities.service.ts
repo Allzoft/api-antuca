@@ -11,12 +11,15 @@ import { UpdateDailyAvailabilityDto } from './../dto/update-dailyAvailability.dt
 
 import { DailyAvailability } from './../entities/dailyAvailability.entity';
 import { start } from 'repl';
+import { UserContextService } from 'src/userContext/service/userContext.service';
 
 @Injectable()
 export class DailyAvailabilitysService {
   constructor(
     @InjectRepository(DailyAvailability)
     private dailyAvailabilityRepository: Repository<DailyAvailability>,
+
+    private userContextService: UserContextService,
   ) {}
 
   async create(createDailyAvailabilityDto: CreateDailyAvailabilityDto) {

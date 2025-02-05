@@ -15,6 +15,7 @@ import { DailyAvailability } from './entities/dailyAvailability.entity';
 import { DailyAvailabilitiesController } from './dailyAvailibilities.controller';
 import { DailyAvailabilitysService } from './services/dailyAvailabilities.service';
 import { OrdersGateway } from './dailyMonitor.websocket';
+import { UserContextModule } from 'src/userContext/userContext.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { OrdersGateway } from './dailyMonitor.websocket';
       OrdersItemsItems,
       DailyAvailability,
     ]),
+    UserContextModule,
   ],
   controllers: [
     ItemsController,
