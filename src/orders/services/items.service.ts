@@ -34,6 +34,7 @@ export class ItemsService {
 
     return list;
   }
+  
 
   async findOne(id: number) {
     const item = await this.itemRepository.findOne({
