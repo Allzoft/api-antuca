@@ -12,6 +12,7 @@ import { OrdersModule } from './orders/orders.module';
 import { AuthModule } from './auth/auth.module';
 import config from './config';
 import { MulterModule } from '@nestjs/platform-express';
+import { UserContextModule } from './userContext/userContext.module';
 
 @Module({
   imports: [
@@ -55,6 +56,8 @@ import { MulterModule } from '@nestjs/platform-express';
     OrdersModule,
 
     AuthModule,
+
+    UserContextModule,
   ],
   controllers: [AppController],
   providers: [AppService],
