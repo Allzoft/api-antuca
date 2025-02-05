@@ -1,6 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm';
 import { OrdersItemsItems } from './order-item-item.entity';
 import { DailyAvailability } from './dailyAvailability.entity';
+import { Restaurants } from 'src/costumers/entities/restaurant.entity';
 
 @Entity()
 export class Items {
@@ -22,8 +29,14 @@ export class Items {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 15 })
   price: number;
 
+  @Column({ type: 'int', nullable: false, default: 1 })
+  restaurantIdResturant: number;
+
   @Column({ type: 'tinyint', default: '1' })
   status: number;
+
+  @ManyToOne(() => Restaurants, (restaurant) => restaurant.items)
+  restaurant: Restaurants;
 
   @OneToMany(() => OrdersItemsItems, (orderItem) => orderItem.order)
   orderItems: OrdersItemsItems[];

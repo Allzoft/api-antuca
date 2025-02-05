@@ -9,6 +9,7 @@ import {
 import { Customers } from './customer.entity';
 import { Clients } from 'src/clients/entities/client.entity';
 import { Orders } from 'src/orders/entities/order.entity';
+import { Items } from 'src/orders/entities/item.entity';
 
 export enum TypeSubscription {
   BASIC = 'BASIC',
@@ -21,7 +22,7 @@ export class Restaurants {
   id_restaurant: number;
 
   @Column({ type: 'varchar', length: 200, nullable: false })
-  name: string; 
+  name: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   logo_image: string;
@@ -53,9 +54,13 @@ export class Restaurants {
   @Column({ type: 'varchar', length: 255, nullable: true })
   schedule: string;
 
-  @Column({ type: 'enum', enum: TypeSubscription, default: TypeSubscription.BASIC })
+  @Column({
+    type: 'enum',
+    enum: TypeSubscription,
+    default: TypeSubscription.BASIC,
+  })
   subscription: TypeSubscription;
-  
+
   @Column({ type: 'varchar', length: 255, nullable: true })
   type_cuisine: string;
 
@@ -88,4 +93,7 @@ export class Restaurants {
 
   @OneToMany(() => Orders, (order) => order.restaurant)
   orders: Orders[];
+
+  @OneToMany(() => Items, (item) => item.restaurant)
+  items: Items[];
 }
