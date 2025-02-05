@@ -12,14 +12,20 @@ import { UpdateCustomerDto } from './../dto/update-customer.dto';
 import { Customers } from './../entities/customer.entity';
 
 import * as bcrypt from 'bcrypt';
+import { UserContextService } from 'src/userContext/service/userContext.service';
 @Injectable()
 export class CustomersService {
   constructor(
     @InjectRepository(Customers)
     private customerRepository: Repository<Customers>,
+
+    private userContextService: UserContextService,
   ) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     const existingCustomer = await this.customerRepository.findOne({
       where: { email: createCustomerDto.email },
     });
@@ -34,12 +40,16 @@ export class CustomersService {
       newCustomer.password = hashPassword;
     }
 
+    newCustomer.restaurantIdRestaurant = restaurantId;
+
     return await this.customerRepository.save(newCustomer);
   }
 
   async findAll() {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const list = await this.customerRepository.find({
-      where: { status: 1 },
+      where: { status: 1, restaurantIdRestaurant: restaurantId },
     });
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });
@@ -48,11 +58,18 @@ export class CustomersService {
   }
 
   async findOne(id: number) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.customerRepository.findOne({
       where: { id_customer: id, status: 1 },
     });
     if (!item) {
       throw new NotFoundException(`This customer #${id} not found`);
+    }
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new BadRequestException(
+        `Este Usuario no pertenece a su restaurante`,
+      );
     }
     return item;
   }
@@ -72,7 +89,15 @@ export class CustomersService {
   }
 
   async update(id: number, updateCustomerDto: UpdateCustomerDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.customerRepository.findOneBy({ id_customer: id });
+
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new BadRequestException(
+        `This customer #${id} not belong to your restaurant`,
+      );
+    }
 
     if (updateCustomerDto.password) {
       const hashPassword = await bcrypt.hash(updateCustomerDto.password, 10);
@@ -84,7 +109,16 @@ export class CustomersService {
   }
 
   async remove(id: number) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.customerRepository.findOneBy({ id_customer: id });
+
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new BadRequestException(
+        `This customer #${id} not belong to your restaurant`,
+      );
+    }
+
     const deleteCustomer: UpdateCustomerDto = {
       status: 0,
     };

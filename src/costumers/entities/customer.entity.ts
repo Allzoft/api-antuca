@@ -47,7 +47,7 @@ export class Customers {
   @Column({ type: 'tinyint', default: 1, comment: '0: deleted; 1: Active' })
   status: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'int', default: 1, nullable: false })
   restaurantIdRestaurant: number;
 
   @CreateDateColumn({
