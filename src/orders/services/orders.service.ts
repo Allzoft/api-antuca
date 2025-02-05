@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orders } from '../entities/order.entity';
 import { Repository, Between, Not } from 'typeorm';
@@ -45,11 +49,12 @@ export class OrdersService {
     private dailyAvailabilitesRepository: Repository<DailyAvailability>,
 
     private readonly ordersGateway: OrdersGateway,
-     private userContextService: UserContextService,
+    private userContextService: UserContextService,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto) {  
-    const restaurantId = this.userContextService.getUser().restaurantIdRestaurant;
+  async create(createOrderDto: CreateOrderDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
 
     const newOrder = this.orderRepository.create(createOrderDto);
 
@@ -108,6 +113,7 @@ export class OrdersService {
             where: {
               date: savedOrder.date,
               itemIdItem: orderItem.itemIdItem,
+              retaurantIdRestaurant: restaurantId,
             },
           });
 
@@ -141,6 +147,8 @@ export class OrdersService {
   }
 
   async findAll() {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const list = await this.orderRepository.find({
       relations: [
         'client',
@@ -149,7 +157,7 @@ export class OrdersService {
         'paymentType',
         'orderItems.item',
       ],
-      where: { status: 1 },
+      where: { status: 1, restaurantIdRestaurant: restaurantId },
       order: {
         date: 'DESC',
       },
@@ -161,6 +169,8 @@ export class OrdersService {
   }
 
   async findOne(id: number) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
     const order = await this.orderRepository.findOne({
       where: { id_order: id, status: 1 },
       relations: [
@@ -173,6 +183,12 @@ export class OrdersService {
     });
     if (!order) {
       throw new NotFoundException(`This order #${id} not found`);
+    }
+
+    if (order.restaurantIdRestaurant !== restaurantId) {
+      throw new UnauthorizedException(
+        `This item #${id} not belong to your restaurant`,
+      );
     }
     return order;
   }
@@ -193,13 +209,18 @@ export class OrdersService {
         id_order: 'DESC',
       },
     });
+
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });
     }
+
     return list;
   }
 
   async findAllByDates(datestart: any, dateend: any) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     datestart = datestart + 'T00:00:00.000Z';
     dateend = dateend + 'T23:59:59.999Z';
     const list = await this.orderRepository.find({
@@ -213,6 +234,7 @@ export class OrdersService {
       where: {
         date: Between(datestart, dateend),
         status: 1,
+        restaurantIdRestaurant: restaurantId,
       },
       order: {
         date: 'DESC',
@@ -225,9 +247,18 @@ export class OrdersService {
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     const order = await this.orderRepository.findOneBy({ id_order: id });
     if (!order) {
       throw new NotFoundException(`This order #${id} not found`);
+    }
+
+    if (order.restaurantIdRestaurant !== restaurantId) {
+      throw new UnauthorizedException(
+        `This order #${id} not belong to your restaurant`,
+      );
     }
 
     if (updateOrderDto.clientIdClient) {
@@ -286,12 +317,10 @@ export class OrdersService {
       order.orderItems = await this.orderItemRepository.save(orderItems);
     }
 
-    console.log(order);
-
     const savedOrder = await this.orderRepository.save(order);
 
     const dailyAvailabilities = await this.dailyAvailabilitesRepository.find({
-      where: { date: savedOrder.date },
+      where: { date: savedOrder.date, retaurantIdRestaurant: restaurantId },
     });
 
     if (dailyAvailabilities.length > 0) {
@@ -320,7 +349,21 @@ export class OrdersService {
   }
 
   async remove(id: number) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     const item = await this.orderRepository.findOneBy({ id_order: id });
+
+    if (!item) {
+      throw new NotFoundException(`This order #${id} not found`);
+    }
+
+    if (item.restaurantIdRestaurant !== restaurantId) {
+      throw new UnauthorizedException(
+        `This order #${id} not belong to your restaurant`,
+      );
+    }
+
     const deleteOrder: UpdateOrderDto = {
       status: 0,
     };
@@ -359,6 +402,9 @@ export class OrdersService {
   }
 
   async generateOrderDoc(id: number): Promise<Buffer> {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+
     const order = await this.orderRepository.findOne({
       where: { id_order: id },
       relations: [
@@ -369,6 +415,19 @@ export class OrdersService {
         'orderItems.item',
       ],
     });
+
+    if (!order) {
+      throw new NotFoundException(`This order #${id} not found`);
+    }
+
+    if (
+      order.restaurantIdRestaurant !==
+      restaurantId
+    ) {
+      throw new UnauthorizedException(
+        `This order #${id} not belong to your restaurant`,
+      );
+    }
 
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({
