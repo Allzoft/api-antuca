@@ -18,7 +18,7 @@ import { ReportsService } from './services/reports.service';
 export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
-  @Get('dailyReports/:datestart/:dateend')
+  @Get('dailyReport/:datestart/:dateend')
   findAll(
     @Param('datestart') datestart: Date,
     @Param('dateend') dateend: Date,

@@ -58,19 +58,13 @@ export class CustomersService {
   }
 
   async findOne(id: number) {
-    const restaurantId =
-      this.userContextService.getUser().restaurantIdRestaurant;
     const item = await this.customerRepository.findOne({
       where: { id_customer: id, status: 1 },
     });
     if (!item) {
       throw new NotFoundException(`This customer #${id} not found`);
     }
-    if (item.restaurantIdRestaurant !== restaurantId) {
-      throw new BadRequestException(
-        `Este Usuario no pertenece a su restaurante`,
-      );
-    }
+
     return item;
   }
 

@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import config from './config';
 import { MulterModule } from '@nestjs/platform-express';
 import { UserContextModule } from './userContext/userContext.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -56,6 +57,8 @@ import { UserContextModule } from './userContext/userContext.module';
     OrdersModule,
 
     AuthModule,
+
+    ReportsModule,
 
     UserContextModule,
   ],

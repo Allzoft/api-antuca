@@ -5,7 +5,7 @@ import { Orders } from 'src/orders/entities/order.entity';
 import { Between, Repository } from 'typeorm';
 import { DailyReport } from '../interfaces/dailyReport';
 import { UserContextService } from 'src/userContext/service/userContext.service';
-import moment from 'moment';
+import * as moment from 'moment';
 
 @Injectable()
 export class ReportsService {
@@ -22,14 +22,21 @@ export class ReportsService {
     datestart: any,
     dateend: any,
   ): Promise<DailyReport> {
-    datestart = datestart + 'T00:00:00.000Z';
-    dateend = dateend + 'T23:59:59.999Z';
+    const filterDatestart: any = datestart + 'T00:00:00.000Z';
+    const filterDateend: any = dateend + 'T23:59:59.999Z';
+    const filterEndCustomers: any = moment(dateend)
+      .add(1, 'day')
+      .utc()
+      .endOf('day')
+      .format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+    console.log('restaurantId', this.userContextService.getUser());
     const restaurantId =
       this.userContextService.getUser().restaurantIdRestaurant;
 
     const orders = await this.orderRepository.find({
+      relations: ['orderItems'],
       where: {
-        date: Between(datestart, dateend),
+        date: Between(filterDatestart, filterDateend),
         status: 1,
         restaurantIdRestaurant: restaurantId,
         state: { priority: 6 },
@@ -67,20 +74,28 @@ export class ReportsService {
     const total_customers = await this.clientRepository.count({
       where: {
         restaurantIdRestaurant: restaurantId,
-        created_at: Between(datestart, dateend),
+        created_at: Between(filterDatestart, filterDateend),
         status: 1,
       },
     });
 
     //crear nuevas variables para filtrado de fecha de una semana atras en formato ISOstring
-    const lastWeekStart: any =
-      moment(datestart).subtract(1, 'weeks').format('YYYY-MM-DD') +
-      'T00:00:00.000Z';
-    const lastWeekEnd: any =
-      moment(dateend).subtract(1, 'weeks').format('YYYY-MM-DD') +
-      'T23:59:59.999Z';
+    const lastWeekStart: any = moment(datestart)
+      .subtract(1, 'weeks')
+      .utc()
+      .startOf('day')
+      .format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+
+    const lastWeekEnd: any = moment(dateend)
+      .subtract(1, 'weeks')
+      .utc()
+      .endOf('day')
+      .format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+
+    console.log(lastWeekStart);
 
     const oldOrders = await this.orderRepository.find({
+      relations: ['orderItems'],
       where: {
         date: Between(lastWeekStart, lastWeekEnd),
         status: 1,
@@ -139,6 +154,4 @@ export class ReportsService {
       weeklyGrowthRate_customers,
     };
   }
-
-  
 }
