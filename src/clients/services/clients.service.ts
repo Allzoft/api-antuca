@@ -33,10 +33,6 @@ export class ClientsService {
     }
 
     const newClient = this.clientRepository.create(createClientDto);
-    if (newClient.password) {
-      const hashPassword = await bcrypt.hash(newClient.password, 10);
-      newClient.password = hashPassword;
-    }
 
     newClient.orders = [];
 
@@ -91,11 +87,6 @@ export class ClientsService {
   }
   async update(id: number, updateClientDto: UpdateClientDto) {
     const item = await this.clientRepository.findOneBy({ id_client: id });
-  
-    if (updateClientDto.password) {
-      const hashPassword = await bcrypt.hash(updateClientDto.password, 10);
-      updateClientDto.password = hashPassword;
-    }
     this.clientRepository.merge(item, updateClientDto);
   
     let savedClient = await this.clientRepository.save(item);

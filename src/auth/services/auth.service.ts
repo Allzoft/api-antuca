@@ -37,19 +37,4 @@ export class AuthService {
     };
   }
 
-  async validateClient(email: string, password: string) {
-    const client = await this.clientsService.findByEmail(email);
-
-    if (!client) {
-      throw new NotFoundException(`El usuario o la contraseña son incorrectas`);
-    }
-
-    const isMatch = await bcrypt.compare(password, client.password);
-
-    if (isMatch) {
-      return client;
-    }
-
-    throw new NotFoundException(`El usuario o la contraseña son incorrectas`);
-  }
 }
