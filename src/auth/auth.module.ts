@@ -14,11 +14,13 @@ import { Clients } from 'src/clients/entities/client.entity';
 import { Customers } from 'src/costumers/entities/customer.entity';
 
 import { CostumersModule } from 'src/costumers/costumers.module';
+import { UserContextModule } from 'src/userContext/userContext.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Clients, Customers]),
     CostumersModule,
+    UserContextModule,
     PassportModule,
     ClientsModule,
     ConfigModule.forRoot(),
