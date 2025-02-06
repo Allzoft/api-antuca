@@ -23,9 +23,6 @@ export class CustomersService {
   ) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
-    const restaurantId =
-      this.userContextService.getUser().restaurantIdRestaurant;
-
     const existingCustomer = await this.customerRepository.findOne({
       where: { email: createCustomerDto.email },
     });
@@ -39,8 +36,6 @@ export class CustomersService {
       const hashPassword = await bcrypt.hash(newCustomer.password, 10);
       newCustomer.password = hashPassword;
     }
-
-    newCustomer.restaurantIdRestaurant = restaurantId;
 
     return await this.customerRepository.save(newCustomer);
   }
