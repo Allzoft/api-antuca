@@ -71,6 +71,7 @@ export class CustomersService {
   async findByEmail(email: string) {
     const customer = await this.customerRepository.findOne({
       where: { email: email },
+      relations: { role: { access: true } },
     });
 
     if (customer) {
