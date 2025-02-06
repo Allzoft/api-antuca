@@ -12,10 +12,11 @@ import { RoleService } from './services/roles.service';
 import { AccessService } from './services/access.service';
 import { RestaurantsController } from './restaurant.controller';
 import { RestaurantsService } from './services/restaurants.service';
+import { Restaurants } from './entities/restaurant.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Customers, Role, Access]),
+    TypeOrmModule.forFeature([Customers, Role, Access, Restaurants]),
     UserContextModule,
   ],
   controllers: [
