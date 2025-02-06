@@ -12,7 +12,7 @@ export class CreateCustomerDto {
   @IsString()
   @IsOptional()
   lastname: string;
-  
+
   @IsString()
   @IsOptional()
   id: string;
@@ -24,15 +24,19 @@ export class CreateCustomerDto {
   @IsString()
   @IsOptional()
   password: string;
-  
+
   @IsString()
   @IsOptional()
   token: string;
-  
+
+  @IsNumber()
+  @IsNotEmpty()
+  roleIdRole: number;
+
   @IsString()
   @IsOptional()
   code_country: string;
-  
+
   @IsString()
   @IsOptional()
   phone: string;

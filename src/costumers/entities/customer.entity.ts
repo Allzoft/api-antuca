@@ -10,6 +10,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Restaurants } from './restaurant.entity';
+import { Role } from './role.entity';
 
 @Entity()
 export class Customers {
@@ -50,6 +51,9 @@ export class Customers {
   @Column({ type: 'int', default: 1, nullable: false })
   restaurantIdRestaurant: number;
 
+  @Column({ type: 'int', default: 1, nullable: false })
+  roleIdRole: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     nullable: false,
@@ -65,6 +69,9 @@ export class Customers {
   @OneToMany(() => Orders, (order) => order.customer)
   orders: Orders[];
 
-  @ManyToOne(()=> Restaurants, restaurant => restaurant.customers)
+  @ManyToOne(() => Restaurants, (restaurant) => restaurant.customers)
   restaurant: Restaurants;
+
+  @ManyToOne(() => Role, (role) => role.customers)
+  role: Role;
 }
