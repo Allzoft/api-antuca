@@ -10,14 +10,21 @@ import { RoleController } from './roles.controller';
 import { AccessController } from './accesses.controller';
 import { RoleService } from './services/roles.service';
 import { AccessService } from './services/access.service';
+import { RestaurantsController } from './restaurant.controller';
+import { RestaurantsService } from './services/restaurants.service';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Customers, Role, Access]),
     UserContextModule,
   ],
-  controllers: [CustomersController, RoleController, AccessController],
-  providers: [CustomersService, RoleService, AccessService],
+  controllers: [
+    CustomersController,
+    RoleController,
+    AccessController,
+    RestaurantsController,
+  ],
+  providers: [CustomersService, RoleService, AccessService, RestaurantsService],
   exports: [CustomersService],
 })
 export class CostumersModule {}
