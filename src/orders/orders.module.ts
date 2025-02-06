@@ -16,6 +16,7 @@ import { DailyAvailabilitiesController } from './dailyAvailibilities.controller'
 import { DailyAvailabilitysService } from './services/dailyAvailabilities.service';
 import { OrdersGateway } from './dailyMonitor.websocket';
 import { UserContextModule } from 'src/userContext/userContext.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UserContextModule } from 'src/userContext/userContext.module';
       OrdersItemsItems,
       DailyAvailability,
     ]),
+    AuthModule,
     UserContextModule,
   ],
   controllers: [

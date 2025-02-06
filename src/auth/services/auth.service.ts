@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
@@ -7,6 +7,8 @@ import { CustomersService } from 'src/costumers/services/customers.service';
 import { Customers } from 'src/costumers/entities/customer.entity';
 import { PayloadToken } from '../models/token.model';
 import { UserContextService } from 'src/userContext/service/userContext.service';
+import config from 'src/config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -14,12 +16,13 @@ export class AuthService {
     private clientsService: ClientsService,
     private customerService: CustomersService,
     private jwtService: JwtService,
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
     private userContextService: UserContextService,
   ) {}
 
   async validateUser(email: string, password: string) {
     const user = await this.customerService.findByEmail(email);
-    
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (user && isMatch) {
@@ -38,6 +41,7 @@ export class AuthService {
     const payload: PayloadToken = {
       id: customer.id_customer,
       email: customer.email,
+      restaurantIdRestaurant: customer.restaurantIdRestaurant,
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -45,4 +49,7 @@ export class AuthService {
     };
   }
 
+  decodeUser(token) {
+    return this.jwtService.decode(token);
+  }
 }
