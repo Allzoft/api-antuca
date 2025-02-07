@@ -51,10 +51,11 @@ export class OrdersGateway
 
   @UseGuards(JwtAuthGuard)
   public async handleConnection(client: Socket) {
-    console.log(client.handshake.auth.token);
+    if(!client.handshake.auth.token) {
+      client.disconnect()
+    } 
 
     const token = client.handshake.auth.token.slice(7);
-
     const payload: PayloadToken = this.authService.decodeUser(token);
     const restaurantId = payload.restaurantIdRestaurant;
 

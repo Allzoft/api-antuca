@@ -41,10 +41,9 @@ export class CustomersService {
   }
 
   async findAll() {
-    const restaurantId =
-      this.userContextService.getUser().restaurantIdRestaurant;
+   
     const list = await this.customerRepository.find({
-      where: { status: 1, restaurantIdRestaurant: restaurantId },
+      where: { status: 1,  },
       relations: { restaurant: true, role: true },
     });
     if (!list.length) {
