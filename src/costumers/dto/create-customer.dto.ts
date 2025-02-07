@@ -37,6 +37,10 @@ export class CreateCustomerDto {
   @IsOptional()
   code_country: string;
 
+  @IsNumber()
+  @IsOptional()
+  restaurantIdRestaurant: number;
+
   @IsString()
   @IsOptional()
   phone: string;

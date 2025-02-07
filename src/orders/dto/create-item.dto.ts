@@ -1,5 +1,12 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { PrimaryGeneratedColumn } from 'typeorm';
+import { TypeItem } from '../entities/item.entity';
 export class CreateItemDto {
   @PrimaryGeneratedColumn()
   id_item: number;
@@ -8,9 +15,9 @@ export class CreateItemDto {
   @IsNotEmpty()
   name: string;
 
-  @IsNumber()
   @IsNotEmpty()
-  type_item: number;
+  @IsEnum(TypeItem)
+  type_item: TypeItem;
 
   @IsString()
   @IsOptional()

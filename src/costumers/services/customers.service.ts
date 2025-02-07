@@ -45,6 +45,7 @@ export class CustomersService {
       this.userContextService.getUser().restaurantIdRestaurant;
     const list = await this.customerRepository.find({
       where: { status: 1, restaurantIdRestaurant: restaurantId },
+      relations: { restaurant: true, role: true },
     });
     if (!list.length) {
       throw new NotFoundException({ message: 'Empty list' });

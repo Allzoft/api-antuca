@@ -9,6 +9,13 @@ import { OrdersItemsItems } from './order-item-item.entity';
 import { DailyAvailability } from './dailyAvailability.entity';
 import { Restaurants } from 'src/costumers/entities/restaurant.entity';
 
+export enum TypeItem {
+  SOPA = 'Sopa',
+  SEGUNDO = 'Segundo',
+  BEBIDA = 'Bebida',
+  OTRO = 'Otro',
+}
+
 @Entity()
 export class Items {
   @PrimaryGeneratedColumn()
@@ -20,8 +27,8 @@ export class Items {
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'int', comment: '0: Sopa, 1: Segundos, 2: others' })
-  type_item: number;
+  @Column({ type: 'enum', enum: TypeItem, default: TypeItem.SEGUNDO })
+  type_item: TypeItem;
 
   @Column({ type: 'varchar', length: 255, nullable: false, default: '' })
   photo: string;

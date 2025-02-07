@@ -29,15 +29,6 @@ export class ClientsService {
   async create(createClientDto: CreateClientDto) {
     const restaurantId =
       this.userContextService.getUser().restaurantIdRestaurant;
-
-    const existingClient = await this.clientRepository.findOne({
-      where: { email: createClientDto.email },
-    });
-
-    if (existingClient) {
-      throw new BadRequestException('El correo ya está registrado');
-    }
-
     const newClient = this.clientRepository.create(createClientDto);
 
     newClient.restaurantIdRestaurant = restaurantId;

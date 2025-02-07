@@ -28,6 +28,8 @@ export class ItemsService {
 
     newItem.restaurantIdRestaurant = restaurantId;
 
+    newItem.dailyAvailabilities = []
+
     return await this.itemRepository.save(newItem);
   }
 
