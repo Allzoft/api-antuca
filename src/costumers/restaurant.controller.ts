@@ -37,11 +37,21 @@ export class RestaurantsController {
     return this.restaurantsService.findOne(+id);
   }
 
+  @Get('one/byUser')
+  findOneByUser() {
+    return this.restaurantsService.findOneByUser();
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateRestaurantDto: UpdateRestaurantDto,
   ) {
     return this.restaurantsService.update(+id, updateRestaurantDto);
+  }
+
+  @Patch()
+  updateByUser(@Body() updateRestaurantDto: UpdateRestaurantDto) {
+    return this.restaurantsService.updateByUser(updateRestaurantDto);
   }
 }

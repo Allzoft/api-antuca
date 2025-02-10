@@ -41,9 +41,8 @@ export class CustomersService {
   }
 
   async findAll() {
-   
     const list = await this.customerRepository.find({
-      where: { status: 1,  },
+      where: { status: 1 },
       relations: { restaurant: true, role: true },
     });
     if (!list.length) {
@@ -55,6 +54,7 @@ export class CustomersService {
   async findOne(id: number) {
     const item = await this.customerRepository.findOne({
       where: { id_customer: id, status: 1 },
+      relations: { restaurant: true },
     });
     if (!item) {
       throw new NotFoundException(`This customer #${id} not found`);
@@ -66,7 +66,7 @@ export class CustomersService {
   async findByEmail(email: string) {
     const customer = await this.customerRepository.findOne({
       where: { email: email },
-      relations: { role: { access: true } },
+      relations: { role: { access: true }, restaurant: true },
     });
 
     if (customer) {

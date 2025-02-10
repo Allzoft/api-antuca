@@ -18,6 +18,7 @@ export class RestaurantsService {
   constructor(
     @InjectRepository(Restaurants)
     private restaurantRepository: Repository<Restaurants>,
+    private userContextService: UserContextService,
   ) {}
 
   async create(createRestaurantDto: CreateRestaurantDto) {
@@ -34,10 +35,35 @@ export class RestaurantsService {
     return list;
   }
 
+  async findOneByUser() {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+    const item = await this.restaurantRepository.findOne({
+      where: { id_restaurant: restaurantId },
+    });
+
+    if (!item) {
+      throw new NotFoundException(`This restaurant #${restaurantId} not found`);
+    }
+    return item;
+  }
+
+  async updateByUser(updateRestaurantDto: UpdateRestaurantDto) {
+    const restaurantId =
+      this.userContextService.getUser().restaurantIdRestaurant;
+    const item = await this.restaurantRepository.findOne({
+      where: { id_restaurant: restaurantId },
+    });
+
+    this.restaurantRepository.merge(item, updateRestaurantDto);
+    return this.restaurantRepository.save(item);
+  }
+
   async findOne(id: number) {
     const item = await this.restaurantRepository.findOne({
       where: { id_restaurant: id },
     });
+
     if (!item) {
       throw new NotFoundException(`This restaurant #${id} not found`);
     }
