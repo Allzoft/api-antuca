@@ -297,7 +297,6 @@ export class OrdersService {
 
       const orderItems = await Promise.all(
         updateOrderDto.items.map(async (item) => {
-          console.log(order.id_order);
 
           const orderItem = this.orderItemRepository.create({
             itemIdItem: item.itemIdItem,
@@ -312,7 +311,6 @@ export class OrdersService {
           return orderItem;
         }),
       );
-      console.log(orderItems);
 
       order.orderItems = await this.orderItemRepository.save(orderItems);
     }

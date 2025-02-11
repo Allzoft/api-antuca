@@ -45,8 +45,6 @@ export class OrdersGateway
   public createOrder() {}
 
   public afterInit(server: Server) {
-    console.log('Soy el server:', server);
-    console.log('WebSocket server initialized');
   }
 
   @UseGuards(JwtAuthGuard)
@@ -69,7 +67,6 @@ export class OrdersGateway
     dateend.setHours(23, 59, 59, 999);
     dateend.setHours(dateend.getHours() - 4);
     try {
-      console.log('Client connected:', client.id);
       client.emit('message', `Conexión exitosa: ${client.id}`);
       const orders = await this.ordersRepostory.find({
         relations: [
@@ -98,7 +95,6 @@ export class OrdersGateway
 
   public handleDisconnect(client: Socket) {
     try {
-      console.log('Client disconnected:', client.id);
     } catch (error) {
       console.error('Error during disconnection:', error.message);
     }

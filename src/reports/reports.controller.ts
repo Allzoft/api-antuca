@@ -19,10 +19,32 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Get('dailyReport/:datestart/:dateend')
-  findAll(
+  getDailyReport(
     @Param('datestart') datestart: Date,
     @Param('dateend') dateend: Date,
   ) {
     return this.reportsService.getDailyReport(datestart, dateend);
+  }
+
+  @Get('ordersSummary/:datestart/:dateend')
+  getOrdersSummaryByMode(
+    @Param('datestart') datestart: Date,
+    @Param('dateend') dateend: Date,
+  ) {
+    return this.reportsService.getOrdersSummaryByMode(datestart, dateend);
+  }
+
+  @Get('financialSummary/:period')
+  getFinancialSummary(
+    @Param('period') period: 'monthly' | 'weekly' | 'daily',
+  ) {
+    return this.reportsService.getFinancialSummary(period);
+  }
+
+  @Get('newClients/:period')
+  getNewClients(
+    @Param('period') period: 'monthly' | 'weekly' | 'daily',
+  ) {
+    return this.reportsService.getNewClients(period);
   }
 }
